@@ -1,0 +1,12 @@
+- name: Open 53/tcp and 53/udp ports with firewalld
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - 53/tcp
+    - 53/udp
+- name: reload service firewalld
+  systemd:
+    name: firewalld
+    state: reloaded
