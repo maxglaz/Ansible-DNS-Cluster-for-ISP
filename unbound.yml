@@ -1,0 +1,6 @@
+---
+- name: Install Unbound recursive DNS cluster member
+  hosts: dnsserver
+  become: yes
+  roles:
+    - role: unbound
