@@ -6,7 +6,37 @@
   loop:
     - 53/tcp
     - 53/udp
-- name: reload service firewalld
+- name: Reload service firewalld
   systemd:
     name: firewalld
     state: reloaded
+- name: Install Unbound
+  yum:
+    name:
+      - unbound
+    state: present
+- name: Configuration change. Allow listening at all available interfases
+  lineinfile:
+    path: /etc/unbound/unbound.conf
+    regexp: 'interface-automatic: no'
+    line: 'interface-automatic: yes'
+    backup: yes
+- name: Configuration change. Allow DNS-requests only from following networks
+  lineinfile:
+    path: /etc/unbound/unbound.conf
+    insertafter: '# access-control: ::ffff:127.0.0.1 allow'
+    line: "{{ item }}"
+  loop:
+        - "access-control: 10.10.10.0/24 allow"
+        - "access-control: 192.168.1.0/24 allow"
+- name: Configuration change. Forward requests to following adress
+  lineinfile:
+    path: /etc/unbound/unbound.conf
+    insertafter: '# unbound-control forward_remove domain.com 1.2.3.4 5.6.7.8'
+    line: "{{ item }}"
+  loop:
+    - 'forward-addr: 8.8.8.8'
+    - 'name: "."'
+    - 'forward-zone:'
+- name: Restart Unbound service.
+  service: name=unbound.service state=started enabled=yes
