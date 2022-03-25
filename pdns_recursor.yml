@@ -1,6 +1,6 @@
 ---
 - name: Install PDNS Recursor
-  hosts: inventory
+  hosts: dnsserver
   become: yes
   vars:
     pdns_rec_config:
