@@ -1,0 +1,6 @@
+[all:vars]
+ansible_user=root
+ansible_ssh_pass=some_password
+
+[dnsserver]
+192.168.5.10
