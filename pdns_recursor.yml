@@ -1,0 +1,28 @@
+---
+- name: Install PDNS Recursor
+  hosts: inventory
+  become: yes
+  vars:
+    pdns_rec_config:
+# Only allow these comma separated netmasks to recurse
+      allow-from:
+        - "10.0.0.0/8"
+        - "172.16.1.0/24"
+# Do not query these netmasks for DNS data
+      dont-query:
+        - "10.0.0.0/8"
+        - "172.16.1.0/24"
+# Zones for which we forward queries, comma separated domain=ip pairs
+      forward-zones:
+        - "some-domain.ca=192.16.5.5"
+# IP addresses to listen on, separated by spaces or commas. Also accepts ports.
+      local-address:
+        - "0.0.0.0"
+# Maximum number of entries in the main cache
+      max-cache-entries:
+        - "2000000"
+# String reported on version.pdns or version.bind
+      version-string:
+        - "PowerDNS Recursor"
+  roles:
+    - role: pdns_recursor
